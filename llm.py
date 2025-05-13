@@ -1,4 +1,4 @@
-from transformers import GPT2LMHeadModel, GPT2Tokenizer, pipeline
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import torch
 
 model_name = "gpt2"
@@ -6,9 +6,22 @@ model_name = "gpt2"
 tokenizer = GPT2Tokenizer.from_pretrained(model_name)
 model = GPT2LMHeadModel.from_pretrained(model_name)
 
-generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
-
 def generate_answer(context, question):
     prompt = f"Context: {context}\nQuestion: {question}\nAnswer:"
-    output = generator(prompt, max_length=200, num_return_sequences=1, temperature=0.7)[0]["generated_text"]
-    return output.split("Answer:")[-1].strip()
+    
+    # Encode the input text
+    inputs = tokenizer.encode(prompt, return_tensors="pt")
+    
+    # Generate text
+    outputs = model.generate(
+        inputs,
+        max_length=len(inputs[0]) + 100,  # Generate up to 100 new tokens
+        num_return_sequences=1,
+        no_repeat_ngram_size=2,
+        temperature=0.7,
+        do_sample=True
+    )
+    
+    # Decode and return the generated text
+    generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return generated_text.split("Answer:")[-1].strip()
