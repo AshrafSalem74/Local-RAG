@@ -1,26 +1,27 @@
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
-model_name = "gpt2"
+model_name = "distilgpt2"
 
-tokenizer = GPT2Tokenizer.from_pretrained(model_name)
-model = GPT2LMHeadModel.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
 
 def generate_answer(context, question):
     prompt = f"Context: {context}\nQuestion: {question}\nAnswer:"
     
     # Encode the input text
-    inputs = tokenizer.encode(prompt, return_tensors="pt")
+    inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
     
     # Generate text
-    outputs = model.generate(
-        inputs,
-        max_length=len(inputs[0]) + 100,  # Generate up to 100 new tokens
-        num_return_sequences=1,
-        no_repeat_ngram_size=2,
-        temperature=0.7,
-        do_sample=True
-    )
+    with torch.no_grad():
+        outputs = model.generate(
+            inputs["input_ids"],
+            max_new_tokens=50,
+            num_return_sequences=1,
+            temperature=0.7,
+            do_sample=True,
+            pad_token_id=tokenizer.eos_token_id
+        )
     
     # Decode and return the generated text
     generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
