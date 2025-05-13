@@ -3,7 +3,7 @@ transformers==4.28.1
 sentence-transformers==2.2.2
 faiss-cpu==1.7.2
 langchain==0.0.166
-torch==2.1.0
+torch
 pypdf==2.10.0
 python-docx==0.8.11
 unstructured==0.6.8
