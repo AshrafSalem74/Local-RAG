@@ -1,9 +1,10 @@
-streamlit==1.20.0
-transformers==4.28.1
+streamlit==1.31.1
+transformers==4.37.2
 sentence-transformers==2.2.2
-faiss-cpu==1.7.2
-langchain==0.0.166
+faiss-cpu==1.7.4
+langchain==0.1.9
+langchain-community==0.0.24
 torch
-pypdf==2.10.0
-python-docx==0.8.11
-unstructured==0.6.8
+pypdf==4.0.1
+python-docx==1.1.0
+unstructured==0.10.30
