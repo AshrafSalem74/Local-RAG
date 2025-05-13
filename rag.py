@@ -1,6 +1,6 @@
 import os
 import pickle
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter
 from sentence_transformers import SentenceTransformer
