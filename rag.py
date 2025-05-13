@@ -14,7 +14,9 @@ def load_or_create_vectorstore():
     if os.path.exists(INDEX_FILE):
         with open(INDEX_FILE, "rb") as f:
             return pickle.load(f)
-    return FAISS.from_documents([], embeddings)
+    # Create a dummy document to initialize the vector store
+    dummy_doc = Document(page_content="dummy")
+    return FAISS.from_documents([dummy_doc], embeddings)
 
 def update_vectorstore(faiss_index, new_text):
     documents = splitter.split_documents([Document(page_content=new_text)])
