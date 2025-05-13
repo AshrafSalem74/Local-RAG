@@ -3,9 +3,10 @@ import pickle
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from langchain_text_splitters import CharacterTextSplitter
-from sentence_transformers import SentenceTransformer
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+# Initialize the embedding model
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=100)
 INDEX_FILE = "vector_store.pkl"
 
@@ -13,7 +14,7 @@ def load_or_create_vectorstore():
     if os.path.exists(INDEX_FILE):
         with open(INDEX_FILE, "rb") as f:
             return pickle.load(f)
-    return FAISS.from_documents([], embedding_model, embedding_function=lambda x: embedding_model.encode([x])[0])
+    return FAISS.from_documents([], embeddings)
 
 def update_vectorstore(faiss_index, new_text):
     documents = splitter.split_documents([Document(page_content=new_text)])
